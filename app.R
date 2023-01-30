@@ -450,8 +450,7 @@ ui <- tagList(
     id = "navbar",
     theme = shinytheme("flatly"),
     title = "",
-    tabPanel(
-      "GeneCloudOmics",
+    tabPanel("GeneCloudOmics",
       br(),
       sidebarLayout(
         sidebarPanel(
@@ -1399,8 +1398,7 @@ ui <- tagList(
     ###############################################
     ###############################################
     ###############################################
-    navbarMenu(
-      "Gene Set Analysis",
+    navbarMenu("Gene Set Analysis",
       
       
       ########## Pathway Enrichment ##############
@@ -1437,16 +1435,16 @@ ui <- tagList(
             hidden(actionButton("sfn_path_gene", "Select First Neighbor")),
             br(),br(),
 
-#             actionButton("fit_path_gene", "Fit Graph"),br(),br(),
-#             actionButton("fitSelected_path_gene", "Fit Selected"),br(),br(),
-#             actionButton("clearSelection_path_gene", "Clear Selection"), br(),br(),
-#             actionButton("removeGraphButton_path_gene", "Remove Graph"), br(),br(),
-#             actionButton("addRandomGraphFromDataFramesButton_path_gene", "Add Random Graph"),br(),br(),
-#             actionButton("getSelectedNodes_path_gene", "Get Selected Nodes"), br(),br(),
-#             htmlOutput("selectedNodesDisplay_path_gene"),
-#             checkboxInput("checkbox_plot", label = "Plot", value = FALSE),
-#             checkboxInput("checkbox_visualization", label = "Visualizationt", value = FALSE),
-#             actionButton("add_gene_path_enrich","Add to report"),
+            # actionButton("fit_path_gene", "Fit Graph"),br(),br(),
+            # actionButton("fitSelected_path_gene", "Fit Selected"),br(),br(),
+            # actionButton("clearSelection_path_gene", "Clear Selection"), br(),br(),
+            # actionButton("removeGraphButton_path_gene", "Remove Graph"), br(),br(),
+            # actionButton("addRandomGraphFromDataFramesButton_path_gene", "Add Random Graph"),br(),br(),
+            # actionButton("getSelectedNodes_path_gene", "Get Selected Nodes"), br(),br(),
+            # htmlOutput("selectedNodesDisplay_path_gene"),
+            # checkboxInput("checkbox_plot", label = "Plot", value = FALSE),
+            # checkboxInput("checkbox_visualization", label = "Visualizationt", value = FALSE),
+            # actionButton("add_gene_path_enrich","Add to report"),
            
 
             hidden(actionButton("fit_path_gene", "Fit Graph")),br(),br(),
@@ -1578,8 +1576,7 @@ ui <- tagList(
       #########################################
       
     ),
-    navbarMenu(
-      "Protein Set Analysis",
+    navbarMenu("Protein Set Analysis",
       tabPanel("Upload a Protein Set",
                sidebarPanel(fileInput("file_protein_set", "Upload UniProt accession CSV file"),
                             textInput("text_protein_set", "Enter UniProt accession csv file"),
@@ -2130,16 +2127,16 @@ ui <- tagList(
             hidden(actionButton("sfn_path_prot", "Select First Neighbor")),
             br(),br(),
 
-#             actionButton("fit_path_prot", "Fit Graph"),br(),br(),
-#             actionButton("fitSelected_path_prot", "Fit Selected"),br(),br(),
-#             actionButton("clearSelection_path_prot", "Clear Selection"), br(),br(),
-#             actionButton("removeGraphButton_path_prot", "Remove Graph"), br(),br(),
-#             actionButton("addRandomGraphFromDataFramesButton_path_prot", "Add Random Graph"),br(),br(),
-#             actionButton("getSelectedNodes_path_prot", "Get Selected Nodes"), br(),br(),
-#             htmlOutput("selectedNodesDisplay_path_prot"),
-#             checkboxInput("checkbox_plot_prot", label = "Plot", value = FALSE),
-#             checkboxInput("checkbox_visualization_prot", label = "Visualizationt", value = FALSE),
-#             actionButton("add_prot_path_enrich","Add to report"),
+            # actionButton("fit_path_prot", "Fit Graph"),br(),br(),
+            # actionButton("fitSelected_path_prot", "Fit Selected"),br(),br(),
+            # actionButton("clearSelection_path_prot", "Clear Selection"), br(),br(),
+            # actionButton("removeGraphButton_path_prot", "Remove Graph"), br(),br(),
+            # actionButton("addRandomGraphFromDataFramesButton_path_prot", "Add Random Graph"),br(),br(),
+            # actionButton("getSelectedNodes_path_prot", "Get Selected Nodes"), br(),br(),
+            # htmlOutput("selectedNodesDisplay_path_prot"),
+            # checkboxInput("checkbox_plot_prot", label = "Plot", value = FALSE),
+            # checkboxInput("checkbox_visualization_prot", label = "Visualizationt", value = FALSE),
+            #actionButton("add_prot_path_enrich","Add to report"),
 
             hidden(actionButton("fit_path_prot", "Fit Graph")),br(),br(),
             hidden(actionButton("fitSelected_path_prot", "Fit Selected")),br(),br(),
