@@ -3715,52 +3715,41 @@ server <- function(input, output, session) {
     print(value_var$geo_file_type)
     if (is.null(input$file1) && value_var$geo_file_type != "rnaseq") {
       return(NULL)
-    }
-    else if (!is.null(input$file1)){
-    parts <- strsplit(input$file1$datapath, ".", fixed = TRUE)
-    type <- parts[[1]][length(parts[[1]])]
-    type <- tolower(type)
-    if (type != "csv") {
-      showModal(modalDialog(
-        title = "Error",
-        "Please input a csv file!"
-      ))
-      return(NULL)
-    }
-    raw_ds <- read.csv(input$file1$datapath)
-    
-    
-    }
-    else if(value_var$geo_file_type == "rnaseq"){
-      
-      if(file.exists(file.path(getwd(),input$file_name_button))){
+    } else if (!is.null(input$file1)) {
+      parts <- strsplit(input$file1$datapath, ".", fixed = TRUE)
+      type <- parts[[1]][length(parts[[1]])]
+      type <- tolower(type)
+      if (type != "csv") {
+        showModal(modalDialog(title = "Error", "Please input a csv file!"))
+        return(NULL)
+        }
+      print("input$file1$datapath")
+      raw_ds <- tryCatch(read.csv(input$file1$datapath), error=function(e) NULL)
+    } else if (value_var$geo_file_type == "rnaseq") {
+      if (file.exists(file.path(getwd(),input$file_name_button))) {
         print("Reading geo_file")
-        
-        raw_ds <- read.table(file.path(getwd(),input$file_name_button) ,header=TRUE, stringsAsFactors = FALSE)
+        raw_ds <- read.table(file.path(getwd(), input$file_name_button), header=TRUE, stringsAsFactors = FALSE)
         print(raw_ds)
         #value_var$geo_file_type<-"none"
-        
-        
-      }else{
+      } else {
         return(NULL)
       }
-        
-      
-    } # remove duplicated gene names
-    else{
+    } else { # remove duplicated gene names
       return(NULL)
     }
-    raw_ds <- na.omit(raw_ds)
-    raw_ds <- raw_ds[!duplicated(raw_ds[, 1]), ]  
-    # raw_ds <- as.data.frame(raw_ds)
-    if (ncol(raw_ds) <= 1) {
-      showModal(modalDialog(
-        title = "Error",
-        "Data file must contain at least 2 columns. Please check raw data format and try again!"
-      ))
+    if (is.null(raw_ds)) {
+      showModal(modalDialog(title = "Error", "Input csv file is empty. Please check."))
       return(NULL)
+    } else {
+      raw_ds <- na.omit(raw_ds)
+      raw_ds <- raw_ds[!duplicated(raw_ds[, 1]), ]  
+      # raw_ds <- as.data.frame(raw_ds)
+      if (ncol(raw_ds) <= 1) {
+        showModal(modalDialog(title = "Error", "Data file must contain at least 2 columns. Please check raw data format and try again!"))
+      return(NULL)
+      }
     }
-    
+
     row_names <- raw_ds[, 1]
     rownames(raw_ds) <- row_names
     raw_DS <- raw_ds[, -1] # remove the first column, which is gene Id
