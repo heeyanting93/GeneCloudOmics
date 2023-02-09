@@ -1259,7 +1259,7 @@ ui <- tagList(
                    checkboxInput("tsne_text", strong("Display sample name"), FALSE),
                    actionButton("submit_tsne2","Plot"),
                    conditionalPanel(
-                     condition = "input.tsne_tabs=='t-SNE plot",
+                     condition = "input.tsne_tabs=='t-SNE plot'",
                      downloadButton("download_tsne2", "Download as PDF")
                    ),
                    conditionalPanel(
@@ -3682,31 +3682,36 @@ server <- function(input, output, session) {
       ))
       return(NULL)
     }
-    ds <- read.csv(input$file2$datapath)
-    ds <- na.omit(ds)
-    ds <- ds[!duplicated(ds[, 1]), ] # remove duplicated gene names
-    
-    row_names <- ds[, 1]
-    DS <- data.frame(ds)
-    if (ncol(DS) <= 1) {
-      showModal(modalDialog(
-        title = "Error",
-        "Please check normalised data file format (Eg_normalised.png) and try again!"
-      ))
+    ds <- tryCatch(read.csv(input$file2$datapath), error=function(e) NULL)
+    if (is.null(ds)) {
+      showModal(modalDialog(title = "Error", "Input csv file is empty. Please check."))
       return(NULL)
-    }
-    DS <- DS[, -1]
-    row.names(DS) <- row_names
-    for (i in 1:ncol(DS)) {
-      if (class(DS[, i]) != "numeric" & class(DS[, i]) != "integer") {
+    } else{
+      ds <- na.omit(ds)
+      ds <- ds[!duplicated(ds[, 1]), ] # remove duplicated gene names
+    
+      row_names <- ds[, 1]
+      DS <- data.frame(ds)
+      if (ncol(DS) <= 1) {
         showModal(modalDialog(
           title = "Error",
           "Please check normalised data file format (Eg_normalised.png) and try again!"
         ))
         return(NULL)
       }
+      DS <- DS[, -1]
+      row.names(DS) <- row_names
+      for (i in 1:ncol(DS)) {
+        if (class(DS[, i]) != "numeric" & class(DS[, i]) != "integer") {
+          showModal(modalDialog(
+            title = "Error",
+            "Please check normalised data file format (Eg_normalised.png) and try again!"
+          ))
+          return(NULL)
+        }
+      }
+      return(DS)
     }
-    return(DS)
   })
   
   # get raw counts
@@ -4030,34 +4035,40 @@ server <- function(input, output, session) {
     }
     
     # read in group names (metadata)
-    groups <- read.csv(input$metafile1$datapath)
-    group_colnames <- as.character(groups[, 1])
     
-    type <- input$file_type
-    if (type == "norm") {
-      DS <- df_norm()
-    } else if (type == "raw") {
-      DS <- df_raw()
-    }
-    col_names <- colnames(DS) # columm names of DS in order
-    
-    # check if groups and column names are similar
-    if (!all(col_names %in% group_colnames) || ncol(groups) < 2) {
-      showNotification(type = "error", "group names and DS column names not similar")
+    groups <- tryCatch(read.csv(input$metafile1$datapath), error=function(e) NULL)
+    if (is.null(groups)) {
+      showModal(modalDialog(title = "Error", "Input csv file is empty. Please check."))
       return(NULL)
-    }
-    
-    if (ncol(groups) == 2) {
-      f <- groups[match(col_names, groups[, 1]), ] [, 2] # arrange f in the same order as col_names
     } else {
-      f <- groups[match(col_names, groups[, 1]), ] [, 2]
-      for (i in 3:ncol(groups)) {
-        f <- paste0(f, "_", groups[, i])
+      group_colnames <- as.character(groups[, 1])
+    
+      type <- input$file_type
+      if (type == "norm") {
+        DS <- df_norm()
+      } else if (type == "raw") {
+        DS <- df_raw()
       }
-    }
-    f <- as.factor(make.names(f))
-    # return(as.factor(f))
-    return(f)
+      col_names <- colnames(DS) # columm names of DS in order
+    
+      # check if groups and column names are similar
+      if (!all(col_names %in% group_colnames) || ncol(groups) < 2) {
+        showNotification(type = "error", "group names and DS column names not similar")
+        return(NULL)
+      }
+    
+      if (ncol(groups) == 2) {
+        f <- groups[match(col_names, groups[, 1]), ] [, 2] # arrange f in the same order as col_names
+      } else {
+        f <- groups[match(col_names, groups[, 1]), ] [, 2]
+        for (i in 3:ncol(groups)) {
+          f <- paste0(f, "_", groups[, i])
+        }
+      }
+      f <- as.factor(make.names(f))
+      # return(as.factor(f))
+      return(f)
+      }
   })
   
   ### Gene ontology
